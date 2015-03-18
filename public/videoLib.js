@@ -21,11 +21,13 @@ var videoLib = (function () {
 			cinema.report.score[i] = "";
 		}
 
-		$(cinema.v).on("timeupdate", function () {
+		function updateRating(){
 			var t = this.currentTime;
 			cinema.report.score[Math.floor(t)] = cinema.getRating();
-		})
-		.on("ended", function () {
+		}
+		
+		function handleEndOfMovie(){
+			$(cinema.v).off("timeupdate", updateRating).off("ended", handleEndOfMovie);
 			var d = JSON.stringify(cinema.report);
 			console.log(d);
 			$.post("receiver", d);
@@ -33,7 +35,10 @@ var videoLib = (function () {
 			if (typeof cb === "function"){
 				cinema.cb();
 			}
-		});
+		}
+		
+		$(cinema.v).on("timeupdate", updateRating).on("ended", handleEndOfMovie);
+		
 		cinema.stop = stop;
 		var playing = false;
 		$(screenSelector + " #bPlayPause").on("click", function () {
