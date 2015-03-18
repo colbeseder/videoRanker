@@ -44,6 +44,7 @@
 		function eraseCookie(name) {
 			createCookie(name, "", -1);
 		}
+		$("#user").val(readCookie("user"));
 		$("form").on("submit", function(){
 			createCookie("user", $("#user").val(), 100);
 		});
