@@ -20,8 +20,8 @@
 	</head>
 	<body>
 		<div id="container" style="">
-			<div class="jumbotron">
-				<video id="mainScreen" src="1.MOV" width="500" no_controls>
+			<div id="cinema" class="jumbotron">
+				<video id="mainScreen" src="" width="500" no_controls>
 				  Your browser does not support the <code>video</code> element.
 				</video>
 				<div class="btn-group" role="group" aria-label="...">
@@ -36,5 +36,8 @@
 		</div>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 		<script src="videoLib.js"></script>
+		<script>
+			videoLib.chain(["movies/2.MOV", "movies/1.MOV"], "#cinema");
+		</script>
 	</body>
 </html>

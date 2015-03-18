@@ -1,73 +1,101 @@
-var v = document.getElementById("mainScreen");
-var videoLength  = 14; //s
+var videoLib = (function () {
+	function start(src, screenSelector, len, cb) {
+		var cinema = {};
+		screenSelector = screenSelector || "#cinema";
+		cinema.cinema = document.querySelectorAll(screenSelector)[0];
+		cinema.v = cinema.cinema.querySelectorAll("#mainScreen")[0];
+		cinema.v.src = src;
+		cinema.videoLength = len || 60; //s
+		cinema.cb = cb;
+		cinema.getRating = function () {
+			var el = cinema.cinema.querySelectorAll("#rating")[0];
+			return parseInt(el.value, 10);
+		}
+		cinema.report = {
+			video : cinema.v.src,
+			username : readCookie("user"),
+			guid : Math.random().toString().slice(2)
+		};
+		for (var i = 0; i < cinema.videoLength; ++i) {
+			cinema.report[i] = "";
+		}
 
-function getRating() {
-	var el = document.getElementById("rating");
-	return parseInt(el.value, 10);
-}
-
-var report = {
-	video: v.src,
-	username: readCookie("user"),
-	guid: Math.random().toString().slice(2)
-};
-
-for(var i = 0 ; i < videoLength; ++i){
-	report[i] = "";
-}
-
-$(v).on("timeupdate", function () {
-	var t = this.currentTime;
-	report[Math.floor(t)] = getRating();
-});
-
-$(v).on("ended", function () {
-	var d = JSON.stringify(report);
-	console.log(d);
-	$.post("receiver", d);
-});
-
-var playing = false;
-$("#bPlayPause").on("click", function(){
-	if(playing){
-		v.pause();
+		$(cinema.v).on("timeupdate", function () {
+			var t = this.currentTime;
+			cinema.report[Math.floor(t)] = cinema.getRating();
+		})
+		.on("ended", function () {
+			var d = JSON.stringify(cinema.report);
+			console.log(d);
+			$.post("receiver", d);
+			cinema.stop();
+			if (typeof cb === "function"){
+				cinema.cb();
+			}
+		});
+		cinema.stop = stop;
+		var playing = false;
+		$(screenSelector + " #bPlayPause").on("click", function () {
+			if (playing) {
+				cinema.v.pause();
+				this.innerHTML = "play";
+				playing = false;
+			} else {
+				cinema.v.play();
+				this.innerHTML = "pause";
+				playing = true;
+			}
+		});
+	}
+	function stop() {
+		this.v.pause();
 		this.innerHTML = "play";
 		playing = false;
+		this.v.src = "";
+		this.v.removeAttribute("src");
 	}
-	else{
-		v.play();
-		this.innerHTML = "pause";
-		playing = true;
+
+	function createCookie(name, value, days) {
+		if (days) {
+			var date = new Date();
+			date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+			var expires = "; expires=" + date.toGMTString();
+		} else
+			var expires = "";
+		document.cookie = name + "=" + value + expires + "; path=/";
 	}
-});
 
-$("#bPause").on("click", function(){
-	v.pause();
-});
-
-function createCookie(name, value, days) {
-	if (days) {
-		var date = new Date();
-		date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-		var expires = "; expires=" + date.toGMTString();
-	} else
-		var expires = "";
-	document.cookie = name + "=" + value + expires + "; path=/";
-}
-
-function readCookie(name) {
-	var nameEQ = name + "=";
-	var ca = document.cookie.split(';');
-	for (var i = 0; i < ca.length; i++) {
-		var c = ca[i];
-		while (c.charAt(0) == ' ')
-			c = c.substring(1, c.length);
-		if (c.indexOf(nameEQ) == 0)
-			return c.substring(nameEQ.length, c.length);
+	function readCookie(name) {
+		var nameEQ = name + "=";
+		var ca = document.cookie.split(';');
+		for (var i = 0; i < ca.length; i++) {
+			var c = ca[i];
+			while (c.charAt(0) == ' ')
+				c = c.substring(1, c.length);
+			if (c.indexOf(nameEQ) == 0)
+				return c.substring(nameEQ.length, c.length);
+		}
+		return null;
 	}
-	return null;
-}
 
-function eraseCookie(name) {
-	createCookie(name, "", -1);
-}
+	function eraseCookie(name) {
+		createCookie(name, "", -1);
+	}
+
+	function chain(list, screenSelector, len){
+		next(list, screenSelector, len, 0);
+	}
+	
+	function next(list, screenSelector, len, idx){
+		if(list[idx]){
+			videoLib.start(list[idx], screenSelector, len, function(){
+				next(list, screenSelector, len, idx+1);
+			});
+		}
+	}
+	
+	return {
+		start : start,
+		chain: chain
+	}
+})();
