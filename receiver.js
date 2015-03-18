@@ -2,12 +2,10 @@ var fs = require('fs');
 
 module.exports = {
 	handle : function (data) {
-		fs.writeFile(__dirname + "/public/data.json", data, function (err) {
+		fs.appendFile(__dirname + "/public/data.json", "\n" + data, function (err) {
 			if (err) {
 				return console.log(err);
 			}
-
-			console.log("The file was saved!");
 		});
 	}
 };

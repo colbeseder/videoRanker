@@ -10,7 +10,7 @@ app.use(express.static(__dirname + '/public'));
 // });
 
 app.post('/receiver.html', function(request, response) {
-	receiver.handle("---DATA---");
+	receiver.handle(request.body);
 	response.send("ok");
 });
 
