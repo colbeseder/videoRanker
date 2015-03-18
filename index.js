@@ -6,25 +6,22 @@ var app = express();
 app.use(express.static(__dirname + '/public'));
 
 app.set('port', (process.env.PORT || 5000));
-// app.get('/', function(request, response) {
-	// response.sendFile(__dirname + '/client/views/index.html');
-// });
 
-app.post('/receiver.html', function(request, response) {
+var reportLog = [];
+
+app.post('/receiver', function(request, response) {
     var body = '';
     request.on('data', function(data) {
         body += data;
     });
     request.on('end', function (){
-		receiver.handle(body);
+		reportLog.push(body);
+		// receiver.handle(body);
     });
 });
 
-app.post('/receive', function(request, respond) {
-});
-
-app.get('/data.html', function(request, response) {
-	response.sendFile(__dirname + '/data.json');
+app.get('/data', function(request, response) {
+	response.send(JSON.stringify(reportLog));
 });
 
 app.listen(app.get('port'), function() {
