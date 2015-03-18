@@ -101,6 +101,8 @@ var videoLib = (function () {
 		}
 	}
 	
+	window.user = readCookie("user");
+	
 	return {
 		start : start,
 		chain: chain
