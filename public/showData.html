@@ -22,13 +22,16 @@
 		  <!-- Table -->
 		  <table class="table">
 				<thead><th>Username</th><th>VIDEO</th><th ng-repeat="y in data[1].score track by $index">{{$index + 1}}</th></thead>
-				<tr ng-repeat="l in data"><td>{{l.username}}</td><td>{{l.video}}</td><td ng-repeat="x in l.score track by $index">{{x}}</td></tr>
+				<tr ng-repeat="l in data"><td>{{l.username}}</td><td>{{trimPath(l.video)}}</td><td ng-repeat="x in l.score track by $index">{{x}}</td></tr>
 			</table>
 		</div>
 		<script>
 			var app = angular.module('ngDisplay', []);
 			var dispScope;
 			app.controller('displayCtrl', function ($scope, $http) {
+				$scope.trimPath = function(x){
+					return x.replace(/^.*\//, '');
+				};
 				$http.get('data').then(function (res) {
 					$scope.data = res.data.map(function(x){
 						try{
