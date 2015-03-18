@@ -21,8 +21,8 @@
 
 		  <!-- Table -->
 		  <table class="table">
-				<thead><th ng-repeat="(key, value) in data[0]">{{key | uppercase}}</th></thead>
-				<tr ng-repeat="l in data"><td ng-repeat="(key, value) in l">{{value}}</td></tr>
+				<thead><th>Username</th><th>VIDEO</th><th ng-repeat="y in data[1].score track by $index">{{$index + 1}}</th></thead>
+				<tr ng-repeat="l in data"><td>{{l.username}}</td><td>{{l.video}}</td><td ng-repeat="x in l.score track by $index">{{x}}</td></tr>
 			</table>
 		</div>
 		<script>

@@ -14,15 +14,16 @@ var videoLib = (function () {
 		cinema.report = {
 			video : cinema.v.src,
 			username : readCookie("user"),
-			guid : Math.random().toString().slice(2)
+			guid : Math.random().toString().slice(2),
+			score: []
 		};
 		for (var i = 0; i < cinema.videoLength; ++i) {
-			cinema.report[i] = "";
+			cinema.report.score[i] = "";
 		}
 
 		$(cinema.v).on("timeupdate", function () {
 			var t = this.currentTime;
-			cinema.report[Math.floor(t)] = cinema.getRating();
+			cinema.report.score[Math.floor(t)] = cinema.getRating();
 		})
 		.on("ended", function () {
 			var d = JSON.stringify(cinema.report);
@@ -46,13 +47,14 @@ var videoLib = (function () {
 				playing = true;
 			}
 		});
-	}
-	function stop() {
-		this.v.pause();
-		this.innerHTML = "play";
-		playing = false;
-		this.v.src = "";
-		this.v.removeAttribute("src");
+		function stop() {
+			this.v.pause();
+			$(screenSelector + " #bPlayPause").html("play");
+			playing = false;
+			this.v.src = "";
+			this.v.removeAttribute("src");
+			cinema.cinema.querySelectorAll("#rating")[0].value = 50;
+		}
 	}
 
 	function createCookie(name, value, days) {
