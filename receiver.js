@@ -2,7 +2,7 @@ var fs = require('fs');
 
 module.exports = {
 	handle : function (data) {
-		fs.writeFile(__dirname + "/data.json", data, function (err) {
+		fs.writeFile(__dirname + "/public/data.json", data, function (err) {
 			if (err) {
 				return console.log(err);
 			}
