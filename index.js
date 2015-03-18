@@ -1,5 +1,5 @@
 var express = require('express');
-var receiver = require('receiver');
+var receiver = require('./receiver');
 var app = express();
 
 app.set('port', (process.env.PORT || 5000));
