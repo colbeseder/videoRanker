@@ -9,7 +9,7 @@ app.use(express.static(__dirname + '/public'));
 	// response.sendFile(__dirname + '/client/views/index.html');
 // });
 
-app.post('receiver.html', function(request, response) {
+app.post('/receiver.html', function(request, response) {
 	receiver.handle("---DATA---");
 	response.send("ok");
 });
