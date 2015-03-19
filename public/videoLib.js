@@ -1,6 +1,7 @@
 var videoLib = (function () {
-	function start(src, screenSelector, len, cb) {
-		var cinema = {};
+	function start(src, screenSelector, len, cb, cinema) {
+		$("#cover").hide();
+		cinema = cinema || {};
 		screenSelector = screenSelector || "#cinema";
 		cinema.cinema = document.querySelectorAll(screenSelector)[0];
 		cinema.v = cinema.cinema.querySelectorAll("#mainScreen")[0];
@@ -25,9 +26,8 @@ var videoLib = (function () {
 			var t = this.currentTime;
 			cinema.report.score[Math.floor(t)] = cinema.getRating();
 		}
-		
+
 		function handleEndOfMovie(){
-			$(cinema.v).off("timeupdate", updateRating).off("ended", handleEndOfMovie);
 			var d = JSON.stringify(cinema.report);
 			console.log(d);
 			$.post("receiver", d);
@@ -36,30 +36,54 @@ var videoLib = (function () {
 				cinema.cb();
 			}
 		}
-		
+
+		function playPause(btnSel, toPlay){
+			var $btn = $(btnSel + ">span")
+			var playIcon = "glyphicon-play";
+			var pauseIcon = "glyphicon-pause";
+			playing = !playing;
+			if(typeof toPlay === "boolean"){
+				playing = toPlay;
+			}
+			if(playing){
+				$btn.removeClass(playIcon).addClass(pauseIcon);
+			}
+			else {
+				$btn.removeClass(pauseIcon).addClass(playIcon);
+			}
+		}
+
 		$(cinema.v).on("timeupdate", updateRating).on("ended", handleEndOfMovie);
-		
+
 		cinema.stop = stop;
 		var playing = false;
+		$(screenSelector + " #bNextVideo").on("click", function () {
+			$(cinema.v).trigger("ended");
+		});
+
+		$(screenSelector + " #bBackToStart").on("click", function () {
+			cinema.v.pause();
+			playPause(screenSelector + " #bPlayPause", false);
+			cinema.v.currentTime = 0;
+		});
 		$(screenSelector + " #bPlayPause").on("click", function () {
 			if (playing) {
 				cinema.v.pause();
-				this.innerHTML = "play";
-				playing = false;
+				playPause(screenSelector + " #bPlayPause", false);
 			} else {
 				cinema.v.play();
-				this.innerHTML = "pause";
-				playing = true;
+				playPause(screenSelector + " #bPlayPause", true);
 			}
 		});
 		function stop() {
+			$(cinema.v).off("timeupdate", updateRating).off("ended", handleEndOfMovie);
 			this.v.pause();
-			$(screenSelector + " #bPlayPause").html("play");
-			playing = false;
+			playPause(screenSelector + " #bPlayPause", false);
 			this.v.src = "";
 			this.v.removeAttribute("src");
 			cinema.cinema.querySelectorAll("#rating")[0].value = 50;
 		}
+		return cinema;
 	}
 
 	function createCookie(name, value, days) {
@@ -89,20 +113,24 @@ var videoLib = (function () {
 		createCookie(name, "", -1);
 	}
 
-	function chain(list, screenSelector, len){
-		next(list, screenSelector, len, 0);
+	function chain(list, screenSelector, len, startIndex, cinema){
+		startIndex = startIndex || 0;
+		return next(list, screenSelector, len, startIndex, cinema);
 	}
-	
-	function next(list, screenSelector, len, idx){
+
+	function next(list, screenSelector, len, idx, cinema){
 		if(list[idx]){
-			videoLib.start(list[idx], screenSelector, len, function(){
-				next(list, screenSelector, len, idx+1);
+			return videoLib.start(list[idx], screenSelector, len, function(){
+				next(list, screenSelector, len, idx+1, cinema);
 			});
 		}
+		else {
+			$("#cover").show();
+		}
 	}
-	
+
 	window.user = readCookie("user");
-	
+
 	return {
 		start : start,
 		chain: chain
