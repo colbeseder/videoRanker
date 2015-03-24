@@ -47,11 +47,11 @@ app.post('/receiver', function (request, response) {
 	});
 });
 
-app.get('/data', function (request, response) {
-	response.send(JSON.stringify(reportLog));
-});
+// app.get('/data', function (request, response) {
+	// response.send(JSON.stringify(reportLog));
+// });
 
-app.get('/db', function (request, response) {
+app.get('/data', function (request, response) {
 	pg.connect(process.env.DATABASE_URL, function (err, client, done) {
 		client.query('TABLE results;', function (err, result) {
 			done();
