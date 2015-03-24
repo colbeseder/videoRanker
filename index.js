@@ -21,7 +21,7 @@ app.post('/receiver', function (request, response) {
 		}
 		pg.connect(process.env.DATABASE_URL, function (err, client, done) {
 			client.query("INSERT INTO results VALUES ($1, $2, $3, $4)",
-				[data.guid, data.username, data.video, JSON.stringify(data.score)],
+				[data.guid, data.username, data.video, JSON.stringify(data.score), +new Date()],
 				function (err, result) {
 				done();
 				if (err) {
