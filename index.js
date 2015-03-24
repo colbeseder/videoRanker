@@ -1,4 +1,5 @@
 var express = require('express');
+var pg = require('pg');
 var receiver = require('./receiver');
 var crud = require('./crud');
 
@@ -27,10 +28,17 @@ app.get('/data', function(request, response) {
 	response.send(JSON.stringify(reportLog));
 });
 
-app.get('/db', function(request, response) {
-	response.send(crud.dump());
-});
-
+app.get('/db', function (request, response) {
+  pg.connect(process.env.DATABASE_URL, function(err, client, done) {
+    client.query('SELECT * FROM results;', function(err, result) {
+      done();
+      if (err)
+       { console.error(err); response.send("Error " + err); }
+      else
+       { response.send(result.rows); }
+    });
+  });
+})
 
 app.listen(app.get('port'), function() {
   console.log("Node app is running at localhost:" + app.get('port'));
