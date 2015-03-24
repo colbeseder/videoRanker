@@ -1,5 +1,6 @@
 var express = require('express');
 var receiver = require('./receiver');
+var crud = require('./crud');
 
 var app = express();
 
@@ -25,6 +26,11 @@ app.post('/receiver', function(request, response) {
 app.get('/data', function(request, response) {
 	response.send(JSON.stringify(reportLog));
 });
+
+app.get('/db', function(request, response) {
+	response.send(crud.dump());
+});
+
 
 app.listen(app.get('port'), function() {
   console.log("Node app is running at localhost:" + app.get('port'));
