@@ -18,21 +18,8 @@ function empty() {}
 function pgQuery(query, cb, vals) {
 	cb = cb || empty;
 	vals = vals || [];
-	pg.connect(process.env.DATABASE_URL, function (err, client, done) {
-		client.query(query, vals, function (err, result) {
-			done();
-			if (err) {
-				cb(err, null);
-			} else {
-				cb(null, result.rows);
-			}
-		});
-	});
-};
 
-function addResult(id, user, video, scores) {
-	pqQuery("INSERT INTO results VALUES ($1, $2, $3, $4)", null, [id, user, video, scores]);
-}
+};
 
 app.post('/receiver', function (request, response) {
 	var body = '';
@@ -41,13 +28,19 @@ app.post('/receiver', function (request, response) {
 	});
 	request.on('end', function () {
 		var data = JSON.parse(body);
-		addResult(
-			data.guid,
-			data.username,
-			data.video,
-			data.score);
+		pg.connect(process.env.DATABASE_URL, function (err, client, done) {
+			client.query("INSERT INTO results VALUES ($1, $2, $3, $4)",
+				[data.guid, data.username, data.video, data.score],
+				function (err, result) {
+				done();
+				if (err) {
+					cb(err, null);
+				} else {
+					cb(null, result.rows);
+				}
+			});
+		});
 		reportLog.push(body);
-		// receiver.handle(body);
 	});
 });
 
@@ -56,11 +49,18 @@ app.get('/data', function (request, response) {
 });
 
 app.get('/db', function (request, response) {
-	pgQuery('SELECT * FROM results;', function (a, b) {
-		response.send(a || b);
+	pg.connect(process.env.DATABASE_URL, function (err, client, done) {
+		client.query('TABLE results;', function (err, result) {
+			done();
+			if (err) {
+				console.error(err);
+				response.send("Error " + err);
+			} else {
+				response.send(result.rows);
+			}
+		});
 	});
 })
-
 app.listen(app.get('port'), function () {
 	console.log("Node app is running at localhost:" + app.get('port'));
 });
