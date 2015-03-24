@@ -1,7 +1,5 @@
 var express = require('express');
 var pg = require('pg');
-var receiver = require('./receiver');
-var crud = require('./crud');
 
 var app = express();
 
