@@ -28,6 +28,9 @@ app.post('/receiver', function (request, response) {
 	});
 	request.on('end', function () {
 		var data = JSON.parse(body);
+		function cb(a, b){
+			response.send(a || b);
+		}
 		pg.connect(process.env.DATABASE_URL, function (err, client, done) {
 			client.query("INSERT INTO results VALUES ($1, $2, $3, $4)",
 				[data.guid, data.username, data.video, data.score],
