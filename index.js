@@ -13,12 +13,13 @@ var demoData = ["{\"video\":\"https://dry-ocean-7339.herokuapp.com/movies/1.MOV\
 
 var reportLog = demoData || [];
 
-function empty(){}
+function empty() {}
 
-function pgQuery(query, cb) {
+function pgQuery(query, cb, vals) {
 	cb = cb || empty;
+	vals = vals || [];
 	pg.connect(process.env.DATABASE_URL, function (err, client, done) {
-		client.query(query, function (err, result) {
+		client.query(query, vals, function (err, result) {
 			done();
 			if (err) {
 				cb(err, null);
@@ -29,8 +30,8 @@ function pgQuery(query, cb) {
 	});
 };
 
-function addResult(id, user, video, scores){
-	pqQuery("INSERT INTO results VALUES ($1, $2, $3, $4)", id, user, video, scores);
+function addResult(id, user, video, scores) {
+	pqQuery("INSERT INTO results VALUES ($1, $2, $3, $4)", null, [id, user, video, scores]);
 }
 
 app.post('/receiver', function (request, response) {
@@ -44,8 +45,7 @@ app.post('/receiver', function (request, response) {
 			data.guid,
 			data.username,
 			data.video,
-			data.score
-		);
+			data.score);
 		reportLog.push(body);
 		// receiver.handle(body);
 	});
@@ -56,8 +56,8 @@ app.get('/data', function (request, response) {
 });
 
 app.get('/db', function (request, response) {
-	pgQuery('SELECT * FROM results;', function(a, b){
-				response.send(a || b);
+	pgQuery('SELECT * FROM results;', function (a, b) {
+		response.send(a || b);
 	});
 })
 
