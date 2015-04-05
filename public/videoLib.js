@@ -68,13 +68,18 @@ app.controller('screenCtrl', function ($scope, $http) {
 		}
 
 		this.handleEndOfMovie = function () {
-			that.report.video = $scope.current;
-			var d = JSON.stringify(that.report);
-			console.log(d);
-			if (/localhost/.test(location.host)) {
-				console.log("Not sending reports");
-			} else {
-				$.post("receiver", d);
+			if (that.report.score.length){
+				that.report.video = $scope.current;
+				var d = JSON.stringify(that.report);
+				console.log(d);
+				if (/localhost/.test(location.host)) {
+					console.log("Not sending reports");
+				} else {
+					$.post("receiver", d);
+				}				
+			}
+			else {
+				console.log("No results to send");
 			}
 			that.stop();
 			changeVideo($scope.currentIdx + 1);
