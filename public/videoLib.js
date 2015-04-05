@@ -130,6 +130,7 @@ app.controller('screenCtrl', function ($scope, $http) {
 
 	var CINEMA = new Cinema("#cinema");
 	$scope.currentIdx = 0;
+	$scope.rating = 50;
 
 	function changeVideo(idx) {
 		if (idx !== undefined) {

@@ -55,7 +55,7 @@
 					<button type="button" id="bPlayPause" class="btn btn-info"><span class="glyphicon glyphicon-play" aria-hidden="true"></span></button>
 					<button type="button" id="bNextVideo" class="btn btn-info"><span class="glyphicon glyphicon-step-forward" aria-hidden="true"></span></button>
 				</div>
-				<div style="float:right;">Score: <span id="ratingInfo" class="badge">{{rating || 50}}</span></div>
+				<div style="float:right;">Score: <span id="ratingInfo" class="badge">{{rating}}</span></div>
 				<div id="scale">
 					<span style="float: left">Bad</span><span style="float: right">Excellent</span><br>
 					<span class="fl">0 </span><input id="rating" ng-model="rating" class="fl" type="range" value="50" min="0" max="100" step="1"><span class="fl"> 100</span>
