@@ -72,12 +72,11 @@ app.controller('screenCtrl', function ($scope, $http) {
 			console.log(d);
 			if (/localhost/.test(location.host)) {
 				console.log("Not sending reports");
-			}
-			else {
+			} else {
 				$.post("receiver", d);
 			}
 			that.stop();
-			changeVideo(++$scope.currentIdx);
+			changeVideo($scope.currentIdx + 1);
 		}
 
 		this.playPause = function (toPlay) {
@@ -101,8 +100,6 @@ app.controller('screenCtrl', function ($scope, $http) {
 		$(this.screen).on("timeupdate", this.updateRating).on("ended", this.handleEndOfMovie);
 
 		this.stop = function () {
-			$(that.screen).off("timeupdate", that.updateRating).off("ended", that.handleEndOfMovie);
-			that.screen.pause();
 			that.playPause(false);
 			that.$rating.val(50);
 		}
@@ -125,6 +122,7 @@ app.controller('screenCtrl', function ($scope, $http) {
 			} else {
 				that.screen.play();
 				that.playPause(that);
+				$("#cover").hide();
 			}
 		});
 
@@ -132,11 +130,17 @@ app.controller('screenCtrl', function ($scope, $http) {
 
 	var CINEMA = new Cinema("#cinema");
 	$scope.currentIdx = 0;
+
 	function changeVideo(idx) {
 		if (idx !== undefined) {
 			$scope.currentIdx = idx;
 		}
-		$scope.current = "movies/" + $scope.VIDEOS[$scope.currentIdx];
+		if ($scope.currentIdx < $scope.VIDEOS.length){
+			$scope.current = "movies/" + $scope.VIDEOS[$scope.currentIdx];
+		}
+		else {
+			$("#cover").show();
+		}
 		try {
 			$scope.$digest();
 		} catch (err) {
@@ -147,6 +151,7 @@ app.controller('screenCtrl', function ($scope, $http) {
 	$('#videoNav').on('click', "li", function (ev) {
 		var newIdx = $('#videoNav li').index(this);
 		if (newIdx !== $scope.currentIdx) {
+			CINEMA.stop();
 			changeVideo(newIdx);
 		}
 	});
@@ -155,4 +160,40 @@ app.controller('screenCtrl', function ($scope, $http) {
 		window.VIDEOS = $scope.VIDEOS;
 		changeVideo(0);
 	});
+
+	/* Custom GUI code: slider */
+	$('#rating').on('input', function () {
+		scaleChange(0);
+	});
+	function scaleChange(x) {
+		var c = parseInt($('#rating').val(), 10);
+		var n = c + x;
+		$scope.rating = n;
+		$scope.$digest();
+	}
+	function scaleInc() {
+		scaleChange(1);
+	}
+	function scaleDec() {
+		scaleChange(-1);
+	}
+
+	// Arrow keys
+	$(document).keydown(function (e) {
+		switch (e.which) {
+		case 37: // left
+		case 40: // down
+			scaleDec();
+			break;
+
+		case 38: // up
+		case 39: // right
+			scaleInc();
+			break;
+		default:
+			return; // exit this handler for other keys
+		}
+		e.preventDefault(); // prevent the default action (scroll / move caret)
+	});
+
 });

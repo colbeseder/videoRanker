@@ -55,10 +55,10 @@
 					<button type="button" id="bPlayPause" class="btn btn-info"><span class="glyphicon glyphicon-play" aria-hidden="true"></span></button>
 					<button type="button" id="bNextVideo" class="btn btn-info"><span class="glyphicon glyphicon-step-forward" aria-hidden="true"></span></button>
 				</div>
-				<div style="float:right;">Score: <span id="ratingInfo" class="badge">50</span></div>
+				<div style="float:right;">Score: <span id="ratingInfo" class="badge">{{rating || 50}}</span></div>
 				<div id="scale">
 					<span style="float: left">Bad</span><span style="float: right">Excellent</span><br>
-					<span class="fl">0 </span><input id="rating" class="fl" type="range" value="50" min="0" max="100" step="1"><span class="fl"> 100</span>
+					<span class="fl">0 </span><input id="rating" ng-model="rating" class="fl" type="range" value="50" min="0" max="100" step="1"><span class="fl"> 100</span>
 				</div>
 			</div>
 			<span class="devOnly" style="margin-left: 100px"><a href="showData.html">Go to Results</a></span>
@@ -72,39 +72,6 @@
 		<script>
 			var MAX_LENGTH = 26;
 
-			/* Custom GUI code: slider */
-			$('#rating').on('input', function(){
-				scaleChange(0);
-			});
-			function scaleChange(x){
-				var c = parseInt($('#rating').val(), 10);
-				var n = c + x;
-				$('#rating').val(n);
-				$('#ratingInfo').text(n);
-			}
-			function scaleInc(){
-				scaleChange(1);
-			}
-			function scaleDec(){
-				scaleChange(-1);
-			}
-
-			// Arrow keys
-			$(document).keydown(function(e) {
-				switch(e.which) {
-					case 37: // left
-					case 40: // down
-						scaleDec();
-						break;
-
-					case 38: // up
-					case 39: // right
-						scaleInc();
-						break;
-					default: return; // exit this handler for other keys
-				}
-				e.preventDefault(); // prevent the default action (scroll / move caret)
-			});
 		</script>
 		<script src="videoLib.js"></script>
 		<script>
