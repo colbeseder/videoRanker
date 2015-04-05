@@ -34,7 +34,7 @@ app.post('/receiver', function (request, response) {
 });
 
 app.get('/movies.json', function (request, response) {
-	var movieList = fs.readdirSync("/app/public/movies");
+	var movieList = fs.readdirSync(__dirname + "/public/movies");
 	response.send(movieList);
 });
 
