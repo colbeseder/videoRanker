@@ -33,8 +33,8 @@ app.post('/receiver', function (request, response) {
 	});
 });
 
-app.get('/movies', function (request, response) {
-	var movieList = fs.readdirSync("/public/movies");
+app.get('/movies.json', function (request, response) {
+	var movieList = fs.readdirSync("/app/public/movies");
 	response.send(movieList);
 });
 
