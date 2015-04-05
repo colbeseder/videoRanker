@@ -4,6 +4,8 @@ var fs = require('fs');
 
 var app = express();
 
+var movieList = fs.readdirSync(__dirname + "/public/movies");
+
 app.use(express.static(__dirname + '/public'));
 
 app.set('port', (process.env.PORT || 5000));
@@ -34,7 +36,12 @@ app.post('/receiver', function (request, response) {
 });
 
 app.get('/movies.json', function (request, response) {
-	var movieList = fs.readdirSync(__dirname + "/public/movies");
+	response.send(movieList);
+});
+
+app.post('/movies.json', function (request, response) {
+	// Force update
+	movieList = fs.readdirSync(__dirname + "/public/movies");
 	response.send(movieList);
 });
 
