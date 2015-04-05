@@ -32,6 +32,11 @@ app.post('/receiver', function (request, response) {
 	});
 });
 
+app.get('/movies', function (request, response) {
+	var movieList = fs.readdirSync("/public/movies");
+	response.send(movieList);
+};
+
 app.get('/data', function (request, response) {
 	pg.connect(process.env.DATABASE_URL, function (err, client, done) {
 		client.query('TABLE results;', function (err, result) {
