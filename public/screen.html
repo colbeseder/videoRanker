@@ -9,27 +9,30 @@
 			.fl {
 				float: left;
 			}
+			.rateValue {
+				width: 30px;
+			}
 			#rating {
-				width: 460px;
+				width: 530px;
 			}
 			#scale {
 				padding-top: 30px;
-				width: 500px;
 			}
 			.jumbotron {
 				margin: auto;
-				width: 560px;
+				border-radius: 7px
 			}
 			#videoNav {
 				float: left;
+				width: 20%;
 				cursor: pointer;
 			}
 			#cover {
 				  position: absolute;
-				  background-color: rgba(30, 40, 50, 0.5);
+				  background-color: rgba(30, 40, 50, 0.7);
 				  margin-top: 120px;
 				  padding-left: 133px;
-				  width: 500;
+				  width: 600;
 				  font-size: larger;
 				  display: none;
 			}
@@ -41,15 +44,20 @@
 			}
 		</style>
 	</head>
-	<body ng-app="ngScreen" ng-controller="screenCtrl" >
+	<body ng-app="ngScreen" ng-controller="screenCtrl">
+		<div id="videoNav">
+			<ul class='nav nav-pills nav-stacked'>
+				<li ng-repeat="v in VIDEOS"><a>movies/{{v}}</a></li>
+			</ul>
+		</div>
 		<div id="container" style="">
 			<div id="cinema" class="jumbotron">
 				<div id="cover">
 					The End!
 				</div>
-				<video id="mainScreen" ng-src="{{current}}" width="500" no_controls>
+				<video id="mainScreen" ng-src="{{current}}" width="600" no_controls>
 				  Your browser does not support the <code>video</code> element.
-				</video>
+				</video><br>
 				<div class="btn-group" role="group" aria-label="...">
 					<button type="button" id="bBackToStart" class="btn btn-info"><span class="glyphicon glyphicon-backward" aria-hidden="true"></span></button>
 					<button type="button" id="bPlayPause" class="btn btn-info"><span class="glyphicon glyphicon-play" aria-hidden="true"></span></button>
@@ -58,16 +66,12 @@
 				<div style="float:right;">Score: <span id="ratingInfo" class="badge">{{rating}}</span></div>
 				<div id="scale">
 					<span style="float: left">Bad</span><span style="float: right">Excellent</span><br>
-					<span class="fl">0 </span><input id="rating" ng-model="rating" class="fl" type="range" value="50" min="0" max="100" step="1"><span class="fl"> 100</span>
+					<span class="rateValue fl">0 </span><input id="rating" ng-model="rating" class="fl" type="range" value="50" min="0" max="100" step="1"><span class="rateValue fl" style="text-align:right;"> 100</span>
 				</div>
 			</div>
 			<span class="devOnly" style="margin-left: 100px"><a href="showData.html">Go to Results</a></span>
 		</div>
-		<div id="videoNav">
-			<ul class='nav nav-pills nav-stacked'>
-				<li ng-repeat="v in VIDEOS"><a>movies/{{v}}</a></li>
-			</ul>
-		</div>
+
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 		<script>
 			var MAX_LENGTH = 26;
