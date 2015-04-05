@@ -1,7 +1,7 @@
 {
-  "name": "Node.js Getting Started",
-  "description": "A barebones Node.js app using Express 4",
-  "repository": "https://github.com/heroku/node-js-getting-started",
+  "name": "Video Ranker",
+  "description": "A web app for rating videos second-by-second",
+  "repository": "https://github.com/colbeseder/videoRanker",
   "logo": "http://node-js-sample.herokuapp.com/node.svg",
-  "keywords": ["node", "express", "static"]
+  "keywords": ["video", "rating", "sound", "node"]
 }
