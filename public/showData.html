@@ -33,7 +33,7 @@
 					return x.replace(/^.*\//, '');
 				};
 				$http.get('data').then(function (res) {
-					$scope.data = res.data.map();
+					$scope.data = res.data;
 				});
 			});
 		</script>

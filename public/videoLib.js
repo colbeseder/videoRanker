@@ -68,6 +68,7 @@ app.controller('screenCtrl', function ($scope, $http) {
 		}
 
 		this.handleEndOfMovie = function () {
+			that.report.video = $scope.current;
 			var d = JSON.stringify(that.report);
 			console.log(d);
 			if (/localhost/.test(location.host)) {
